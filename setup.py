@@ -1,25 +1,20 @@
 from distutils.core import setup
 
-
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
 setup(
     name='morph-py',  # How you named your package folder (MyLib)
     packages=['morph'],  # Chose the same as "name"
     # Start with a small number and increase it with every change you make
-    version='0.0.3-alpha',
+    version='0.0.4-alpha',
     # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     license='GNU',
     # Give a short description about your library
     description='Automate the refinement of your neural network architecture',
-    long_description=long_description,
     author='Stephen Fox',  # Type in your name
     author_email='stevethecoder34@gmail.com',  # Type in your E-Mail
     # Provide either the link to your github or to your website
     url='https://github.com/stephenjfox/Morph.py',
     # I explain this later on
-    download_url='https://github.com/stephenjfox/Morph.py/archive/v0.0.3.tar.gz',
+    download_url='https://github.com/stephenjfox/Morph.py/archive/v0.0.4.tar.gz',
     keywords=[
         'machine learning', 'deep learning', 'nas', 'architecture',
         'neural networks'
