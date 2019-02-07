@@ -1,1 +1,1 @@
-As I draft my implementation, the source for that will go here
+A crafty implementation of Google's [MorphNet](https://arxiv.org/abs/1711.06798) (and derivative iterations) in PyTorch.
