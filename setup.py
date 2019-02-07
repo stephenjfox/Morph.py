@@ -1,10 +1,11 @@
 from distutils.core import setup
+from setuptools import find_packages
 
 setup(
     name='morph-py',  # How you named your package folder (MyLib)
-    packages=['morph'],  # Chose the same as "name"
+    packages=find_packages(),  # Chose the same as "name"
     # Start with a small number and increase it with every change you make
-    version='0.0.4-alpha',
+    version='0.0.5-alpha',
     # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     license='GNU',
     # Give a short description about your library
@@ -14,7 +15,7 @@ setup(
     # Provide either the link to your github or to your website
     url='https://github.com/stephenjfox/Morph.py',
     # I explain this later on
-    download_url='https://github.com/stephenjfox/Morph.py/archive/v0.0.4.tar.gz',
+    download_url='https://github.com/stephenjfox/Morph.py/archive/v0.0.5.tar.gz',
     keywords=[
         'machine learning', 'deep learning', 'nas', 'architecture',
         'neural networks'
