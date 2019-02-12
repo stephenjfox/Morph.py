@@ -1,2 +1,2 @@
-from .sparsify import *
+from .sparse import *
 from .widen import widen
