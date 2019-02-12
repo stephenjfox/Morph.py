@@ -9,6 +9,8 @@ def make_children_list(children_or_named_children):
     """
     return [c for c in children_or_named_children]
 
+#################### NEW LAYERS ####################
+
 def new_layer(base_layer: nn.Module, type_name: str, in_dim: int, out_dim: int) -> nn.Module:
 
     has_bias = layer_has_bias(base_layer)

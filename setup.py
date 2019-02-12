@@ -14,7 +14,6 @@ setup(
     author_email='stevethecoder34@gmail.com',  # Type in your E-Mail
     # Provide either the link to your github or to your website
     url='https://github.com/stephenjfox/Morph.py',
-    # I explain this later on
     download_url='https://github.com/stephenjfox/Morph.py/archive/v0.0.6.tar.gz',
     keywords=[
         'machine learning', 'deep learning', 'nas', 'architecture',

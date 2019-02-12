@@ -1,8 +1,7 @@
 import torch.nn as nn
 import unittest
 
-from utils import new_input_layer, new_output_layer
-
+from .utils import new_input_layer, new_output_layer
 
 class TestLayer(unittest.TestCase):
     def test_new_input_layer_only_touches_output_Linear(self):
