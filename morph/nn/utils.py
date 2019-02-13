@@ -1,5 +1,36 @@
 import torch.nn as nn
 
+from morph.nn._types import type_name, type_supported
+
+from typing import List, Tuple, TypeVar
+
+ML = TypeVar('MODULES', List[nn.Module])
+# Type constrained to be the results of nn.Module.children() or ...named_children()
+CL = TypeVar('MODULE_CHILDREN_LIST', ML, List[Tuple[str, nn.Module]])
+
+
+def group_layers_by_algo(children_list: CL) -> ML:
+    """Group the layers into how they will be acted upon by my implementation of the algorithm:
+    1. First child in the list (the "input" layer)
+    2. Slice of all the child, those that are not first nor last
+    3. Last child in the list (the "output" layer)
+    """
+
+    list_len = len(children_list)
+
+    # validate input in case I slip up
+    if list_len < 1:
+        raise ValueError('Invalid argument:', children_list)
+
+    if list_len <= 2:
+        return children_list  # interface?
+
+    first = children_list[0]
+    middle = children_list[1:-1]
+    last = children_list[-1]
+
+    return first, middle, last
+
 
 def layer_has_bias(layer: nn.Module) -> bool:
     return not layer.bias is None
@@ -66,7 +97,7 @@ def new_output_layer(base_layer: nn.Module, type_name: str, in_dim: int) -> nn.M
 
 def redo_layer(layer: nn.Module, new_in=None, new_out=None) -> nn.Module:
     if new_in is None and new_out is None:
-        return layehr
+        return layer
 
     _type = type_name(layer)
     if not type_supported(_type):
@@ -96,14 +127,3 @@ def layer_is_conv2d(name: str):
 
 def layer_is_linear(name: str):
     return name == 'Linear'
-
-
-def type_name(o):
-    '''Returns the simplified type name of the given object.
-    Eases type checking, rather than any(isinstance(some_obj, _type) for _type in [my, types, to, check])
-    '''
-    return type(o).__name__
-
-
-def type_supported(type_name: str) -> bool:
-    return type_name in ['Conv2d', 'Linear']
