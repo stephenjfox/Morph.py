@@ -8,12 +8,13 @@ from morph.layers.sparse import sparsify
 
 from morph._models import EasyMnist
 
+
 def main():
     my_model = EasyMnist()
     # do one pass through the algorithm
     modified = morph.once(my_model)
 
-    print(modified) # proof that the thing wasn't tampered with
+    print(modified)  # proof that the thing wasn't tampered with
 
     my_dataloader = DataLoader(TensorDataset(torch.randn(2, 28, 28)))
 
@@ -23,4 +24,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main() # TODO: add commandline arguments?
+    main()  # TODO: add commandline arguments?

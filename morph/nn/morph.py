@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+
 def once(net: nn.Module, experimental_support=False) -> nn.Module:
     """Runs an experimental implementation of the MorphNet algorithm on `net`
       producing a new network:

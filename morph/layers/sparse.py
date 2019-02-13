@@ -3,6 +3,7 @@ import torch.nn as nn
 
 _ZERO_TENSOR = torch.tensor(0.)
 
+
 def sparsify(tensor: torch.Tensor, threshold: float = 0.0) -> torch.Tensor:
     """Sparsify a `tensor` with `0.0` for all values that do not meet the `threshold`.
     Defaults to rejecting negative numbers.
@@ -17,6 +18,7 @@ def sparsify(tensor: torch.Tensor, threshold: float = 0.0) -> torch.Tensor:
         `torch.Tensor` of the same dimensions as `tensor`
     """
     return tensor.where(tensor > threshold, _ZERO_TENSOR)
+
 
 def percent_waste(layer: nn.Module) -> float:
     """Computes the number of sparse neurons in a weight matrix,
