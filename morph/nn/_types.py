@@ -6,4 +6,5 @@ def type_name(o):
 
 
 def type_supported(type_name: str) -> bool:
+    # NOTE: already considerd a constants file. I don't like that precident
     return type_name in ['Conv2d', 'Linear']
