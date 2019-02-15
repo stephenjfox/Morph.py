@@ -14,7 +14,7 @@ def main():
     # do one pass through the algorithm
     modified = morph.once(my_model)
 
-    print(modified)  # proof that the thing wasn't tampered with
+    print(modified) # take a peek at the new layers. You take it from here
 
     my_dataloader = DataLoader(TensorDataset(torch.randn(2, 28, 28)))
 
