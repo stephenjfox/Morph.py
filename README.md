@@ -27,6 +27,54 @@ A Stephen Fox endeavor to become an Applied AI Scientist.
 
 ---
 
+## Usage
+
+### Installation
+
+`pip install morph-py`
+
+### Code Example
+
+```python
+import morph
+
+morph_optimizer = None
+# train loop
+for e in range(epoch_count):
+
+  for input, target in dataloader:
+    optimizer.zero_grad() # optional: zero gradients or don't...
+    output = model(input)
+
+    loss = loss_fn(output, target)
+    loss.backward()
+    optim.step()
+
+
+    # setup for comparing the morphed model
+    if morph_optimizer:
+      morph_optimizer.zero_grad()
+      morph_loss = loss_fn(morph_model(input), target)
+
+      logging.info(f'Morph loss - Standard loss = {morph_loss - loss}')
+
+      morph_loss.backward()
+      morph_optimizer.step()
+
+
+    # Experimentally supported: Initialize our morphing halfway training
+    if e == epoch_count // 2:
+      # if you want to override your model
+      model = morph.once(model)
+
+      # if you want to compare in parallel
+      morph_model = morph.once(model)
+
+      # either way, you need to tell your optimizer about it
+      morph_optimizer = init_optimizer(params=morph_model.parameters())
+      
+```
+
 ## What is Morph.py?
 
 Morph.py is a Neural Network Architecture Optimization toolkit targeted at Deep Learning researchers

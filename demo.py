@@ -20,6 +20,8 @@ def main():
 
     # get back the class that will do work
     morphed = net.Morph(my_model, epochs=5, dataloader=my_dataloader)
+
+    # TODO: we need your loss function, but this is currentry __unsupported__
     morphed.run_training()
 
 
