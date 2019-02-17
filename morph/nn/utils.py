@@ -1,6 +1,7 @@
 import torch.nn as nn
 
 from morph.nn._types import type_name, type_supported
+from morph._utils import check
 
 from typing import List, Tuple, TypeVar
 
@@ -41,6 +42,31 @@ def make_children_list(children_or_named_children):
     Returns: that generator collected as a list
     """
     return [c for c in children_or_named_children]
+
+
+#################### LAYER INSPECTION ####################
+
+
+def in_dim(layer: nn.Module) -> int:
+    check(type_supported(layer))
+
+    if layer_is_linear(layer):
+        return layer.in_features
+    elif layer_is_conv2d(layer):
+        return layer.in_channels
+    else:
+        raise RuntimeError('Inspecting on unsupported layer')
+
+
+def out_dim(layer: nn.Module) -> int:
+    check(type_supported(layer))
+
+    if layer_is_linear(layer):
+        return layer.out_features
+    elif layer_is_conv2d(layer):
+        return layer.out_channels
+    else:
+        raise RuntimeError('Inspecting on unsupported layer')
 
 
 #################### NEW LAYERS ####################
