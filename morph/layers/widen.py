@@ -3,11 +3,11 @@ import logging
 import torch
 import torch.nn as nn
 
-from ..nn.utils import layer_has_bias
+from ..nn.utils import layer_has_bias, redo_layer
+from .._utils import check, round
 
 
 # NOTE: should factor be {smaller, default at all}?
-# TODO: Research - is there a better type for layer than nn.Module?
 def widen(layer: nn.Module, factor=1.4, in_place=False) -> nn.Module:
     """
     Args:
@@ -23,23 +23,18 @@ def widen(layer: nn.Module, factor=1.4, in_place=False) -> nn.Module:
     Returns:
         A new layer of the base type (e.g. nn.Linear) or `None` if in_place=True
     """
-    if factor < 1.0:
-        raise ValueError('Cannot shrink with the widen() function')
-    if factor == 1.0:
-        raise ValueError("You shouldn't waste compute time if you're not changing anything")
+    check(factor > 1.0, "Your call to widen() should be increasing the size of your layers")
     # we know that layer.weight.size()[0] is the __output__ dimension in the linear case
     output_dim = 0
     if isinstance(layer, nn.Linear):
         output_dim = layer.weight.size()[0]  # FIXME: switch to layer.out_features?
         input_dim = layer.weight.size()[1]  # FIXME: switch to layer.in_features?
-    # TODO: other classes, for robustness?
-    # TODO: Use dictionary look-ups instead, because they're faster?
     else:
         raise ValueError('unsupported layer type:', type(layer))
 
     logging.debug(f"current dimensions: {(output_dim, input_dim)}")
 
-    new_size = round(factor * output_dim + .5)  # round up, not down, if we can
+    new_size = round(factor * output_dim)  # round up, not down, if we can
 
     # We're increasing layer width from output_dim to new_size, so let's save that for later
     size_diff = new_size - output_dim
@@ -56,19 +51,25 @@ def widen(layer: nn.Module, factor=1.4, in_place=False) -> nn.Module:
 
         # TODO: cleanup duplication? Missing properties that will effect usability?
         if in_place:
-            layer.out_features = new_size
-            layer.weight = p_weights
-            layer.bias = p_bias
-            logging.warning(
-                'Using experimental "in-place" version. May have unexpected affects on activation.'
-            )
+            write_layer_properties(layer, new_size, p_weights, p_bias)
             return layer
         else:
-            print(f"New shape = {expanded_weights.shape}")
-            l = nn.Linear(*expanded_weights.shape[::-1], bias=utils.layer_has_bias(layer))
-            l.weight = p_weights
-            l.bias = p_bias
+            logging.debug(f"New shape = {expanded_weights.shape}")
+            new_input, new_output = expanded_weights[1], expanded_weights[0]
+            l = redo_layer(layer, new_in=new_input, new_out=new_output)
+            write_layer_properties(layer, new_size=None, new_weights=p_weights, new_bias=p_bias)
+
             return l
+
+def write_layer_properties(layer, new_size, new_weights, new_bias):
+    """Assigns properties to this `layer`, making the changes on a model in-line
+    """
+    if new_size: layer.out_features = new_size
+    if new_weights: layer.weight = new_weights
+    if new_bias: layer.bias = new_bias
+    logging.warning(
+        'Using experimental "in-place" version. May have unexpected affects on activation.'
+    )
 
 
 def _expand_bias_or_weight(t: nn.Parameter, increase: int) -> torch.Tensor:
