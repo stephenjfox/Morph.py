@@ -1,6 +1,7 @@
 import torch.nn as nn
 
 from morph.nn._types import type_name, type_supported
+from morph._utils import check
 
 from typing import List, Tuple, TypeVar
 
@@ -12,15 +13,14 @@ CL = TypeVar('MODULE_CHILDREN_LIST', ML, List[Tuple[str, nn.Module]])
 def group_layers_by_algo(children_list: CL) -> ML:
     """Group the layers into how they will be acted upon by my implementation of the algorithm:
     1. First child in the list (the "input" layer)
-    2. Slice of all the child, those that are not first nor last
+    2. Slice of all the children, those that are not first nor last
     3. Last child in the list (the "output" layer)
     """
 
     list_len = len(children_list)
 
     # validate input in case I slip up
-    if list_len < 1:
-        raise ValueError('Invalid argument:', children_list)
+    check(list_len > 1, 'Your children_list must be more than a singleton')
 
     if list_len <= 2:
         return children_list  # interface?
@@ -41,6 +41,31 @@ def make_children_list(children_or_named_children):
     Returns: that generator collected as a list
     """
     return [c for c in children_or_named_children]
+
+
+#################### LAYER INSPECTION ####################
+
+
+def in_dim(layer: nn.Module) -> int:
+    check(type_supported(layer))
+
+    if layer_is_linear(layer):
+        return layer.in_features
+    elif layer_is_conv2d(layer):
+        return layer.in_channels
+    else:
+        raise RuntimeError('Inspecting on unsupported layer')
+
+
+def out_dim(layer: nn.Module) -> int:
+    check(type_supported(layer))
+
+    if layer_is_linear(layer):
+        return layer.out_features
+    elif layer_is_conv2d(layer):
+        return layer.out_channels
+    else:
+        raise RuntimeError('Inspecting on unsupported layer')
 
 
 #################### NEW LAYERS ####################
