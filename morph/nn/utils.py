@@ -1,11 +1,11 @@
 import torch.nn as nn
 
 from morph.nn._types import type_name, type_supported
-from morph._utils import check
+from morph.utils import check
 
 from typing import List, Tuple, TypeVar
 
-ML = TypeVar('MODULES', List[nn.Module])
+ML = List[nn.Module]
 # Type constrained to be the results of nn.Module.children() or ...named_children()
 CL = TypeVar('MODULE_CHILDREN_LIST', ML, List[Tuple[str, nn.Module]])
 

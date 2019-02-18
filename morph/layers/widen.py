@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 from ..nn.utils import layer_has_bias, redo_layer
-from .._utils import check, round
+from ..utils import check, round
 
 
 # NOTE: should factor be {smaller, default at all}?

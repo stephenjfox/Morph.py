@@ -6,7 +6,7 @@ import morph
 import morph.nn as net
 from morph.layers.sparse import sparsify
 
-from morph._models import EasyMnist
+from morph.testing.models import EasyMnist
 
 
 def random_dataset():
@@ -19,7 +19,7 @@ def main():
 
     print(modified) # take a peek at the new layers. You take it from here
 
-    my_dataloader = DataLoader(random_dataset)
+    my_dataloader = DataLoader(random_dataset())
 
     # get back the class that will do work
     morphed = net.Morph(my_model, epochs=5, dataloader=my_dataloader)
