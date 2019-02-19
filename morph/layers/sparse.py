@@ -28,7 +28,7 @@ def percent_waste(layer: nn.Module) -> float:
       weight matrix/tensor to determine how many neurons can be spared
     """
     w = layer.weight
-    non_sparse_w = torch.nonzero(sparsify(w))
+    non_sparse_w = sparsify(w).nonzero()
     non_zero_count = non_sparse_w.numel() // len(non_sparse_w[0])
 
     percent_size = non_zero_count / w.numel()

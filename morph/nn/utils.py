@@ -47,22 +47,26 @@ def make_children_list(children_or_named_children):
 
 
 def in_dim(layer: nn.Module) -> int:
-    check(type_supported(layer))
+    """Returns the input dimension of a given (supported) `layer`"""
+    layer_name = type_name(layer)
+    check(type_supported(layer_name))
 
-    if layer_is_linear(layer):
+    if layer_is_linear(layer_name):
         return layer.in_features
-    elif layer_is_conv2d(layer):
+    elif layer_is_conv2d(layer_name):
         return layer.in_channels
     else:
         raise RuntimeError('Inspecting on unsupported layer')
 
 
 def out_dim(layer: nn.Module) -> int:
-    check(type_supported(layer))
+    """Returns the output dimension of a given (supported) `layer`"""
+    layer_name = type_name(layer)
+    check(type_supported(layer_name))
 
-    if layer_is_linear(layer):
+    if layer_is_linear(layer_name):
         return layer.out_features
-    elif layer_is_conv2d(layer):
+    elif layer_is_conv2d(layer_name):
         return layer.out_channels
     else:
         raise RuntimeError('Inspecting on unsupported layer')

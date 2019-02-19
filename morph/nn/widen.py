@@ -3,8 +3,12 @@ import torch.nn as nn
 import logging
 
 from morph.nn.utils import group_layers_by_algo, make_children_list, out_dim, redo_layer
-from morph._utils import round
+from morph.utils import round
 from morph.nn._types import type_name, type_supported
+
+
+def widen(net: nn.Module, width_factor: float = 1.4) -> nn.Module:
+    return resize_layers(net, width_factor)
 
 
 def resize_layers(net: nn.Module, width_factor: float = 1.4) -> nn.Module:
@@ -15,7 +19,7 @@ def resize_layers(net: nn.Module, width_factor: float = 1.4) -> nn.Module:
     old_layers = make_children_list(net.named_children())
     (first_name, first_layer), middle, last = group_layers_by_algo(old_layers)
 
-    first_layer_output_size = first_layer.out_channels  # count of the last layer's out features
+    first_layer_output_size = out_dim(first_layer)  # count of the last layer's out features
 
     new_out_next_in = round(first_layer_output_size * width_factor)
 
@@ -32,6 +36,9 @@ def resize_layers(net: nn.Module, width_factor: float = 1.4) -> nn.Module:
             new_layer = redo_layer(child, new_in=new_out_next_in, new_out=new_out)
             new_out_next_in = new_out
             network.add_module(name, new_layer)
+        elif type_is_nested(child):
+            raise NotImplementedError(
+                'Currently do not support for nested structures (i.e. ResidualBlock, nn.Sequntial)')
         else:
             logging.warning(f"Encountered a non-resizable layer: {type(child)}")
             network.add_module(name, child)
@@ -40,3 +47,7 @@ def resize_layers(net: nn.Module, width_factor: float = 1.4) -> nn.Module:
     network.add_module(last_name, redo_layer(last_layer, new_in=new_out_next_in))
 
     return network
+
+def type_is_nested(layer: nn.Module) -> bool:
+    """Returns true is the `layer` has children"""
+    return bool(make_children_list(layer))
