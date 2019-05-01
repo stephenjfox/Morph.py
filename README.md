@@ -6,6 +6,8 @@ This API is undergoing wild changes as it approaches release.
 
 Please feel free to look around, but bookmark which release tag it was. Master will be changing, viciously.
 
+It is recommended that you consult [the current working branch](https://github.com/stephenjfox/Morph.py/tree/release/v0.1.0) for a more realistic view of the codebase
+
 
 ---
 
